@@ -1,6 +1,7 @@
 import yfinance as yf
 import pandas as pd
 import concurrent.futures
+import streamlit as st
 from typing import List, Dict, Optional
 
 # Expanded list of Indian Small/Mid-cap stocks (NSE)
@@ -334,6 +335,7 @@ def update_market_data(progress_callback=None, quick_mode=False) -> str:
     except Exception as e:
         return f"Error saving cache: {e}"
 
+@st.cache_data(ttl=3600, show_spinner="Loading Market Data...")
 def load_market_cache() -> pd.DataFrame:
     """
     Loads market data from local parquet cache.
