@@ -258,7 +258,7 @@ def update_market_data(progress_callback=None, quick_mode=False) -> str:
     if not os.path.exists(CACHE_DIR):
         os.makedirs(CACHE_DIR)
         
-    tickers = get_all_nse_tickers()
+    tickers = sorted(list(set(get_all_nse_tickers())))
     total = len(tickers)
     
     # Determine period based on mode
