@@ -47,10 +47,10 @@ def main():
                 # Add to preview table
                 table.add_row(
                     stock['symbol'],
-                    f"${analysis['current_price']}",
-                    analysis['trend'],
-                    str(analysis['rsi']),
-                    ", ".join(analysis['signals']) if analysis['signals'] else "-"
+                    f"${analysis.get('current_price', 0)}",
+                    analysis.get('trend', 'Unknown'),
+                    str(analysis.get('rsi', 0)),
+                    ", ".join(analysis.get('signals', [])) if analysis.get('signals') else "-"
                 )
             progress.advance(task2)
 
