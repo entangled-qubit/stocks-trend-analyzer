@@ -59,15 +59,14 @@ if 'auto_update_done' not in st.session_state:
     st.session_state['auto_update_done'] = True
 
 # API Key Input
+# API Key Input
 st.sidebar.markdown("---")
-use_default_key = st.sidebar.checkbox("Use Default API Key", value=False)
-if use_default_key:
-    api_key = "AIzaSyCK0bEUrwFepTYJX5JUVFEur7qNYnTyAOQ"
-    st.sidebar.success("Default Key Active")
-else:
-    api_key = st.sidebar.text_input("🔑 Gemini API Key", type="password", help="Get one from Google AI Studio")
+api_key = st.sidebar.text_input("🔑 Gemini API Key", type="password", help="Get one from Google AI Studio")
 
-st.sidebar.markdown("---")
+# Check for Secrets
+if not api_key and "GEMINI_API_KEY" in st.secrets:
+    api_key = st.secrets["GEMINI_API_KEY"]
+    st.sidebar.success("✅ Key loaded from Secrets")
 st.sidebar.subheader("🔄 Data Management")
 
 # Quick Update (Incremental)
