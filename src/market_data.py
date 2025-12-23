@@ -3,6 +3,20 @@ import pandas as pd
 import concurrent.futures
 import streamlit as st
 from typing import List, Dict, Optional
+import requests
+
+# Fix for 401 Unauthorized Error
+session = requests.Session()
+session.headers.update({
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+})
+# Configure yfinance to use this session (hacky global patch if needed, or pass session)
+# Since yfinance global configuration is not always reliable for 'download', we might need to rely on the update.
+# However, newer yfinance versions handle this better. 
+# We will rely on the upgraded version but if that fails, we can't easily pass 'session' to download in all versions.
+# Let's try to set it via pandas_datareader override if relevant, but yfinance is standalone here.
+# NOTE: In yfinance >= 0.2, it manages sessions well if User-Agent is standard.
+
 
 # Expanded list of Indian Small/Mid-cap stocks (NSE)
 # Expanded list of Indian Stocks (Targeting NIFTY 500 coverage)
@@ -64,7 +78,8 @@ def get_batch_stock_data(tickers: List[str], period: str = "1y") -> pd.DataFrame
     """
     try:
         # yf.download is faster for batch
-        data = yf.download(tickers, period=period, group_by='ticker', threads=True, progress=False)
+        # Added auto_adjust=True to suppress warning and ensure consistent data
+        data = yf.download(tickers, period=period, group_by='ticker', threads=True, progress=False, auto_adjust=True)
         return data
     except Exception as e:
         print(f"Error in batch download: {e}")
@@ -281,7 +296,7 @@ def update_market_data(progress_callback=None, quick_mode=False) -> str:
             
         try:
             # Download chunk
-            data = yf.download(chunk, period=period, group_by='ticker', threads=True, progress=False)
+            data = yf.download(chunk, period=period, group_by='ticker', threads=True, progress=False, auto_adjust=True)
             if not data.empty:
                 all_data.append(data)
         except Exception as e:

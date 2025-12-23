@@ -207,7 +207,7 @@ with tab1:
                 st.dataframe(
                     top_quality[display_cols].style.highlight_max(axis=0, subset=['Score'], color='lightgreen'),
                     column_config=column_config,
-                    use_container_width=True
+                    width='stretch'
                 )
 
             with rank2:
@@ -224,7 +224,7 @@ with tab1:
                 st.dataframe(
                     lookout[display_cols].style.highlight_max(axis=0, subset=['RSI'], color='lightblue'),
                     column_config=column_config,
-                    use_container_width=True
+                    width='stretch'
                 )
 
             with rank3:
@@ -242,7 +242,7 @@ with tab1:
                         st.dataframe(
                             sector_df[display_cols].style.highlight_max(axis=0, subset=['Score'], color='lightgreen'),
                             column_config=column_config,
-                            use_container_width=True
+                            width='stretch'
                         )
                 else:
                     st.info("⚠️ Sector data not available in Instant Mode. Run Deep Analysis on individual stocks to see details.")
@@ -262,13 +262,13 @@ with tab1:
                     c1, c2, c3 = st.columns(3)
                     with c1:
                         st.markdown("**Large Cap (>20k Cr)**")
-                        st.dataframe(large[['Symbol', 'Score', 'Price']].reset_index(drop=True), use_container_width=True)
+                        st.dataframe(large[['Symbol', 'Score', 'Price']].reset_index(drop=True), width='stretch')
                     with c2:
                         st.markdown("**Mid Cap (5k-20k Cr)**")
-                        st.dataframe(mid[['Symbol', 'Score', 'Price']].reset_index(drop=True), use_container_width=True)
+                        st.dataframe(mid[['Symbol', 'Score', 'Price']].reset_index(drop=True), width='stretch')
                     with c3:
                         st.markdown("**Small Cap (<5k Cr)**")
-                        st.dataframe(small[['Symbol', 'Score', 'Price']].reset_index(drop=True), use_container_width=True)
+                        st.dataframe(small[['Symbol', 'Score', 'Price']].reset_index(drop=True), width='stretch')
                 else:
                     st.info("⚠️ Market Cap data not available in Instant Mode. Run Deep Analysis on individual stocks to see details.")
 
@@ -355,7 +355,7 @@ with tab2:
                     
                     if not intraday_data.empty:
                         # Plot using Streamlit's native chart
-                        st.line_chart(intraday_data['Close'], use_container_width=True)
+                        st.line_chart(intraday_data['Close'], width='stretch')
                         
                         # Show latest price and change
                         latest_price = intraday_data['Close'].iloc[-1]
@@ -406,7 +406,7 @@ with tab2:
         with st.expander("📊 Quarterly Financials"):
             fin_df = detailed_data.get('quarterly_financials')
             if fin_df is not None and not fin_df.empty:
-                st.dataframe(fin_df, use_container_width=True)
+                st.dataframe(fin_df, width='stretch')
             else:
                 st.info("No quarterly financial data available.")
 
