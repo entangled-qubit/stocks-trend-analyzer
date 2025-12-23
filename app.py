@@ -64,8 +64,15 @@ st.sidebar.markdown("---")
 api_key = st.sidebar.text_input("🔑 Gemini API Key", type="password", help="Get one from Google AI Studio")
 
 # Check for Secrets
-if not api_key and "GEMINI_API_KEY" in st.secrets:
-    api_key = st.secrets["GEMINI_API_KEY"]
+api_key_from_secrets = None
+try:
+    if "GEMINI_API_KEY" in st.secrets:
+        api_key_from_secrets = st.secrets["GEMINI_API_KEY"]
+except (FileNotFoundError, Exception):
+    pass
+
+if not api_key and api_key_from_secrets:
+    api_key = api_key_from_secrets
     st.sidebar.success("✅ Key loaded from Secrets")
 st.sidebar.subheader("🔄 Data Management")
 

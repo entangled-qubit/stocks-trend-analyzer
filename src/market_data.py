@@ -180,8 +180,8 @@ def get_all_nse_tickers() -> List[str]:
         
         # Extract symbols and add .NS
         if 'SYMBOL' in df.columns:
-            tickers = [f"{sym}.NS" for sym in df['SYMBOL'].tolist()]
-            return tickers
+            tickers = [f"{sym}.NS".strip().upper() for sym in df['SYMBOL'].tolist()]
+            return sorted(list(set(tickers)))
         else:
             print("Column 'SYMBOL' not found in NSE CSV.")
             return SAMPLE_TICKERS
@@ -310,6 +310,9 @@ def update_market_data(progress_callback=None, quick_mode=False) -> str:
         if progress_callback: progress_callback(0.90, "Processing downloaded data...")
         new_df = pd.concat(all_data, axis=1)
         
+        # Remove duplicate columns (Ticker symbols) if any
+        new_df = new_df.loc[:, ~new_df.columns.duplicated()]
+        
         if quick_mode and os.path.exists(CACHE_FILE):
             # Load existing cache
             try:
@@ -335,6 +338,8 @@ def update_market_data(progress_callback=None, quick_mode=False) -> str:
         
         # Save to Parquet
         if progress_callback: progress_callback(0.98, "Finalizing and saving to disk...")
+        # Final deduplication before saving
+        full_df = full_df.loc[:, ~full_df.columns.duplicated()]
         full_df.to_parquet(CACHE_FILE)
         
         # Fetch Fundamentals if Full Update
